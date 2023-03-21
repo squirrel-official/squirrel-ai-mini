@@ -6,8 +6,8 @@ from customLogging.customLogging import get_logger
 count = 0
 
 # For reading
-FAMILIAR_FACES_PATH = '/usr/local/squirrel-ai/data/familiar-faces/*'
-WANTED_CRIMINALS_PATH = '/usr/local/squirrel-ai/data/wanted-criminals/*'
+FAMILIAR_FACES_PATH = '/usr/local/squirrel-ai-mini/data/familiar-faces/*'
+WANTED_CRIMINALS_PATH = '/usr/local/squirrel-ai-mini/data/wanted-criminals/*'
 
 logger = get_logger("ImageLoadService")
 

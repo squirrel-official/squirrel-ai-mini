@@ -6,7 +6,7 @@ import importlib.util
 
 
 def tensor_coco_ssd_mobilenet(image):
-    MODEL_NAME = '/usr/local/squirrel-ai/model/coco-ssd-mobilenet'
+    MODEL_NAME = '/usr/local/squirrel-ai-mini/model/coco-ssd-mobilenet'
     GRAPH_NAME = 'detect.tflite'
     LABELMAP_NAME = 'labelmap.txt'
     min_conf_threshold = float(0.65)

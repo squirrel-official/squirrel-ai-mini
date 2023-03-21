@@ -3,7 +3,7 @@ import sys
 from logging.handlers import TimedRotatingFileHandler
 
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-LOG_FILE = "/usr/local/squirrel-ai/logs/service.log"
+LOG_FILE = "/usr/local/squirrel-ai-mini/logs/service.log"
 
 
 def get_console_handler():

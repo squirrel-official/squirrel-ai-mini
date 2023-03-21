@@ -11,13 +11,13 @@ import requests
 from multiprocessing import Process
 
 # For writing
-UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai/result/unknown-visitors/'
+UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
 
 GARAGE_EXTERNAL_CAMERA_STREAM = '/dev/video0'
 NOTIFICATION_URL = 'http://my-security.local:8087/visitor'
 count = 0
-ssd_model_path = '/usr/local/squirrel-ai/model/coco-ssd-mobilenet'
-efficientdet_lite0_path = '/usr/local/squirrel-ai/model/efficientdet-lite0/efficientdet_lite0.tflite'
+ssd_model_path = '/usr/local/squirrel-ai-mini/model/coco-ssd-mobilenet'
+efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/efficientdet_lite0.tflite'
 logger = get_logger("Motion Detection")
 
 

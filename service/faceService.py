@@ -9,17 +9,17 @@ import requests
 
 logger = get_logger("FaceComparisonUtil")
 MOTION_VIDEO_URL = '/var/lib/motion/*'
-CONFIG_PROPERTIES = '/usr/local/squirrel-ai/config.properties'
-ARCHIVE_URL = "/usr/local/squirrel-ai/data/archives/"
+CONFIG_PROPERTIES = '/usr/local/squirrel-ai-mini/config.properties'
+ARCHIVE_URL = "/usr/local/squirrel-ai-mini/data/archives/"
 
 # For writing
-UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai/result/unknown-visitors/'
-CAPTURED_CRIMINALS_PATH = '/usr/local/squirrel-ai/result/captured-criminals/'
-KNOWN_VISITORS_PATH = '/usr/local/squirrel-ai/result/known-visitors/'
+UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
+CAPTURED_CRIMINALS_PATH = '/usr/local/squirrel-ai-mini/result/captured-criminals/'
+KNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/known-visitors/'
 
 # For reading
-FAMILIAR_FACES_PATH = '/usr/local/squirrel-ai/data/familiar-faces/*'
-WANTED_CRIMINALS_PATH = '/usr/local/squirrel-ai/data/wanted-criminals/*'
+FAMILIAR_FACES_PATH = '/usr/local/squirrel-ai-mini/data/familiar-faces/*'
+WANTED_CRIMINALS_PATH = '/usr/local/squirrel-ai-mini/data/wanted-criminals/*'
 
 CRIMINAL_NOTIFICATION_URL = 'http://my-security.local:8087/criminal'
 VISITOR_NOTIFICATION_URL = 'http://my-security.local:8087/visitor'

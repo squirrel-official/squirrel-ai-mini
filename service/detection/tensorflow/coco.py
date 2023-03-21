@@ -1,13 +1,13 @@
 import cv2
 # This is to pull the information about what each object is called
 classNames = []
-classFile = "/usr/local/squirrel-ai/model/coco/coco.names"
+classFile = "/usr/local/squirrel-ai-mini/model/coco/coco.names"
 with open(classFile, "rt") as f:
     classNames = f.read().rstrip("\n").split("\n")
 
 # This is to pull the information about what each object should look like
-configPath = "/usr/local/squirrel-ai/model/coco/ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt"
-weightsPath = "/usr/local/squirrel-ai/model/coco/frozen_inference_graph.pb"
+configPath = "/usr/local/squirrel-ai-mini/model/coco/ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt"
+weightsPath = "/usr/local/squirrel-ai-mini/model/coco/frozen_inference_graph.pb"
 
 # This is some set up values to get good results
 net = cv2.dnn_DetectionModel(weightsPath, configPath)
