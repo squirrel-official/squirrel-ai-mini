@@ -6,6 +6,7 @@ from email.header import Header
 import os
 import smtplib
 
+
 # from_user = "anil.kumar.ait09@gmail.com"
 # from_pwd = "pw"
 # final_path_current = "path/to/folder/with/images"
@@ -29,10 +30,6 @@ def generate_email(from_user, to_list, img_dict):
     msg_alternative.attach(msg_text)
     msg.attach(msg_alternative)
     msg_html = u'<h1>Below are the images</h1>'
-    for img in img_dict:
-        msg_html += u'<h3>' + img["title"][
-                              :-4] + '</h3><div dir="ltr">''<img src="cid:{cid}" alt="{alt}"><br></div>'.format(
-            alt=cgi.escape(img['title'], quote=True), **img)
     msg_html = MIMEText(msg_html, 'html', 'utf-8')
     msg_alternative.attach(msg_html)
     for img in img_dict:
