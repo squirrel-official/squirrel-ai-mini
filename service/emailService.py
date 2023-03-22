@@ -20,7 +20,6 @@ def attach_image(image_path):
     logger.info("image dict: {0}".format(image_path))
     with open(image_path, 'rb') as file:
         msg_image = MIMEImage(file.read(), name=os.path.basename(image_path['path']))
-    msg_image.add_header('Content-ID', '<{}>'.format(image_path['cid']))
     return msg_image
 
 
