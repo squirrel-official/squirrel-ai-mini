@@ -19,7 +19,7 @@ logger = get_logger("Motion Detection")
 def attach_image(image_path):
     logger.info("image dict: {0}".format(image_path))
     with open(image_path, 'rb') as file:
-        msg_image = MIMEImage(file.read(), name=os.path.basename(image_path['path']))
+        msg_image = MIMEImage(file.read())
     return msg_image
 
 
