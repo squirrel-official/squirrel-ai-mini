@@ -14,7 +14,8 @@ import smtplib
 
 
 def attach_image(img_dict):
-    with open(img_dict['path'], 'rb') as file:
+    print(img_dict)
+    with open(img_dict, 'rb') as file:
         msg_image = MIMEImage(file.read(), name=os.path.basename(img_dict['path']))
     msg_image.add_header('Content-ID', '<{}>'.format(img_dict['cid']))
     return msg_image
