@@ -7,11 +7,10 @@ from detection.tensorflow.tf_coco_ssd_algorithm import tensor_coco_ssd_mobilenet
 from detection.tensorflow.coco import any_object_found
 from faceService import analyze_face
 from imageLoadService import load_criminal_images, load_known_images
+from emailService import generate_email, send_email
+
 import requests
 from multiprocessing import Process
-
-# For writing
-from service.emailService import generate_email, send_email
 
 UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
 GARAGE_EXTERNAL_CAMERA_STREAM = '/dev/video0'
