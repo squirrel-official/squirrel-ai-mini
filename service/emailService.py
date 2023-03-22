@@ -6,15 +6,18 @@ from email.header import Header
 import os
 import smtplib
 
-
 # from_user = "anil.kumar.ait09@gmail.com"
 # from_pwd = "pw"
 # final_path_current = "path/to/folder/with/images"
 # receive_mail = "anil.kumar.ait09@gmail.com"
 
+from customLogging.customLogging import get_logger
+
+logger = get_logger("Motion Detection")
+
 
 def attach_image(img_dict):
-    print(img_dict)
+    logger.info("image dict: {0}".format(img_dict))
     with open(img_dict, 'rb') as file:
         msg_image = MIMEImage(file.read(), name=os.path.basename(img_dict['path']))
     msg_image.add_header('Content-ID', '<{}>'.format(img_dict['cid']))
