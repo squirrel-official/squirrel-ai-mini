@@ -16,15 +16,15 @@ from customLogging.customLogging import get_logger
 logger = get_logger("Motion Detection")
 
 
-def attach_image(img_dict):
-    logger.info("image dict: {0}".format(img_dict))
-    with open(img_dict, 'rb') as file:
-        msg_image = MIMEImage(file.read(), name=os.path.basename(img_dict['path']))
-    msg_image.add_header('Content-ID', '<{}>'.format(img_dict['cid']))
+def attach_image(image_path):
+    logger.info("image dict: {0}".format(image_path))
+    with open(image_path, 'rb') as file:
+        msg_image = MIMEImage(file.read(), name=os.path.basename(image_path['path']))
+    msg_image.add_header('Content-ID', '<{}>'.format(image_path['cid']))
     return msg_image
 
 
-def generate_email(from_user, to_list, img_dict):
+def generate_email(from_user, to_list, image_path):
     msg = MIMEMultipart('related')
     msg['Subject'] = Header(u'Subject', 'utf-8')
     msg['From'] = from_user
@@ -36,8 +36,7 @@ def generate_email(from_user, to_list, img_dict):
     msg_html = u'<h1>Below are the images</h1>'
     msg_html = MIMEText(msg_html, 'html', 'utf-8')
     msg_alternative.attach(msg_html)
-    for img in img_dict:
-        msg.attach(attach_image(img))
+    msg.attach(attach_image(image_path))
 
     return msg
 
