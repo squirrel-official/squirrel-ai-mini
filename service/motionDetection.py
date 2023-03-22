@@ -11,10 +11,16 @@ import requests
 from multiprocessing import Process
 
 # For writing
-UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
+from service.emailService import generate_email, send_email
 
+UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
 GARAGE_EXTERNAL_CAMERA_STREAM = '/dev/video0'
 NOTIFICATION_URL = 'http://my-security.local:8087/visitor'
+
+from_user = "anil.kumar.ait09@gmail.com"
+from_pwd = "pw"
+to_user = "anil.kumar.ait09@gmail.com"
+
 count = 0
 ssd_model_path = '/usr/local/squirrel-ai-mini/model/coco-ssd-mobilenet'
 efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/efficientdet_lite0.tflite'
@@ -43,6 +49,8 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     complete_file_name = UNKNOWN_VISITORS_PATH + str(camera_id) + "-" + str(image_count) + '.jpg'
                     image_count = image_count + 1
                     cv2.imwrite(complete_file_name, image)
+                    msg = generate_email(from_user, to_user, complete_file_name)
+                    send_email(msg, from_user, from_pwd, to_user)
                     analyze_face(image, frame_count, criminal_cache, known_person_cache)
 
                 if (time.time() - detection_counter) > 3 and object_detection_flag == 1:
