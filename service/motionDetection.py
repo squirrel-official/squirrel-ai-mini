@@ -48,7 +48,6 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
         frame_count = 1
         image_count = 1
         object_detection_flag = 0
-        detection_counter = time.time()
         if capture.isOpened():
             ret, image = capture.read()
             logger.info(" Processing file {0} ".format(streamUrl))
@@ -57,7 +56,6 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     logger.debug("Object detected, flag :{0}".format(object_detection_flag))
                     print(fps)
                     if object_detection_flag == 0:
-                        detection_counter = time.time()
                         object_detection_flag = 1
                     complete_file_name = UNKNOWN_VISITORS_PATH + str(camera_id) + "-" + str(image_count) + '.jpg'
                     image_count = image_count + 1
@@ -74,6 +72,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                 if motion_detected and frames_saved < frames_to_save_before_motion + frames_to_save_after_motion:
                     if capture.get(cv2.CAP_PROP_POS_FRAMES) >= start_frame:
                         out.write(image)
+                        print('saved to frame: {0}'.format(frames_saved))
                         frames_saved += 1
                 elif motion_detected:
                     motion_detected = False
