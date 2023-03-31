@@ -19,8 +19,8 @@ from_user = "anil.kumar.ait09@gmail.com"
 from_pwd = "pw"
 to_user = "anil.kumar.ait09@gmail.com"
 
-frames_to_save_before_motion = 15
-frames_to_save_after_motion = 15
+frames_to_save_before_motion = 30
+frames_to_save_after_motion = 30
 count = 0
 FRAME_WIDTH = 800
 FRAME_HEIGHT = 600
@@ -36,8 +36,8 @@ def monitor_camera_stream(streamUrl, criminal_cache, known_person_cache):
         start_frame = None
         frames_saved = 0
         capture = cv2.VideoCapture(streamUrl)
-        # capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
-        # capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
+        capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
+        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         fps = capture.get(cv2.CAP_PROP_FPS)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out = cv2.VideoWriter("/usr/local/squirrel-ai-mini/{0}.avi".format(time.time()), fourcc, fps,
