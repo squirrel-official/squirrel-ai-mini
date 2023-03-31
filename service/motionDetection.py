@@ -20,6 +20,9 @@ from_user = "anil.kumar.ait09@gmail.com"
 from_pwd = "pw"
 to_user = "anil.kumar.ait09@gmail.com"
 
+frames_to_save_before_motion = 30
+frames_to_save_after_motion = 30
+
 count = 0
 ssd_model_path = '/usr/local/squirrel-ai-mini/model/coco-ssd-mobilenet'
 efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/efficientdet_lite0.tflite'
@@ -28,6 +31,11 @@ logger = get_logger("Motion Detection")
 
 def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
     try:
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter('output_video.avi', fourcc, 30, (640, 480))
+        motion_detected = False
+        start_frame = None
+        frames_saved = 0
         capture = cv2.VideoCapture(streamUrl)
         if not capture.isOpened():
             logger.error("Error opening video file {}".format(streamUrl))
@@ -42,6 +50,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
             while ret:
                 if tensor_coco_ssd_mobilenet(image) and any_object_found(image, 0.50, 0.4):
                     logger.debug("Object detected, flag :{0}".format(object_detection_flag))
+                    motion_detected = True
                     if object_detection_flag == 0:
                         detection_counter = time.time()
                         object_detection_flag = 1
@@ -56,6 +65,16 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     object_detection_flag = 0
                     data = requests.post(NOTIFICATION_URL)
                     logger.info("Detected activity sent notification, response : {0}".format(data))
+
+                # If motion is detected, save the video of the motion
+                if motion_detected and frames_saved < frames_to_save_before_motion + frames_to_save_after_motion:
+                    if capture.get(cv2.CAP_PROP_POS_FRAMES) >= start_frame:
+                        out.write(image)
+                        frames_saved += 1
+                elif motion_detected:
+                    motion_detected = False
+                    frames_saved = 0
+
                 ret, image = capture.read()
     except Exception as e:
         logger.error("An exception occurred.")
