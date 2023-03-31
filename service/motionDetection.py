@@ -20,8 +20,8 @@ from_user = "anil.kumar.ait09@gmail.com"
 from_pwd = "pw"
 to_user = "anil.kumar.ait09@gmail.com"
 
-frames_to_save_before_motion = 30
-frames_to_save_after_motion = 30
+frames_to_save_before_motion = 15
+frames_to_save_after_motion = 15
 count = 0
 FRAME_WIDTH = 800
 FRAME_HEIGHT = 600
