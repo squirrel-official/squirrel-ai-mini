@@ -1,11 +1,9 @@
-import cgi
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.header import Header
 from PIL import Image
 import numpy as np
-import os
 import smtplib
 
 # from_user = "anil.kumar.ait09@gmail.com"
@@ -38,7 +36,7 @@ def generate_email(from_user, to_list, numpy_image):
     msg_html = MIMEText(msg_html, 'html', 'utf-8')
     msg_alternative.attach(msg_html)
     # msg.attach(attach_image(image_path))
-    msg.attach(MIMEImage(Image.fromarray(np.uint8(numpy_image)).convert('RGB')))
+    msg.attach(MIMEImage(PIL.Image.fromarray(numpy_image)))
     return msg
 
 

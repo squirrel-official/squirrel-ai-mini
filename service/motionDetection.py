@@ -8,9 +8,9 @@ from detection.tensorflow.coco import any_object_found
 from faceService import analyze_face
 from imageLoadService import load_criminal_images, load_known_images
 from emailService import generate_email, send_email
-
-import requests
 from multiprocessing import Process
+from PIL import Image
+import numpy as np
 
 UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
 GARAGE_EXTERNAL_CAMERA_STREAM = '/dev/video0'
@@ -51,6 +51,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
         if capture.isOpened():
             ret, image = capture.read()
             print(type(image))
+            PIL.Image.fromarray(image)
             logger.info(" Processing file {0} ".format(streamUrl))
             while ret:
                 if tensor_coco_ssd_mobilenet(image) and any_object_found(image, 0.50, 0.4):
