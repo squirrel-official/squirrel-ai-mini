@@ -10,6 +10,7 @@ from imageLoadService import load_criminal_images, load_known_images
 from emailService import generate_email, send_email
 from multiprocessing import Process
 from PIL import Image
+from io import BytesIO
 
 UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
 GARAGE_EXTERNAL_CAMERA_STREAM = '/dev/video0'
@@ -48,21 +49,26 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
         image_count = 1
         object_detection_flag = 0
         if capture.isOpened():
-            ret, image = capture.read()
-            print(type(image))
+            ret, numpy_image = capture.read()
+            print(type(numpy_image))
             logger.info(" Processing file {0} ".format(streamUrl))
             while ret:
-                if tensor_coco_ssd_mobilenet(image) and any_object_found(image, 0.50, 0.4):
+                if tensor_coco_ssd_mobilenet(numpy_image) and any_object_found(numpy_image, 0.50, 0.4):
                     logger.debug("Object detected, flag :{0}".format(object_detection_flag))
                     print(fps)
                     if object_detection_flag == 0:
                         object_detection_flag = 1
-                    # complete_file_name = UNKNOWN_VISITORS_PATH + str(camera_id) + "-" + str(image_count) + '.jpg'
                     image_count = image_count + 1
-                    # cv2.imwrite(complete_file_name, image)
-                    msg = generate_email(from_user, to_user,  Image.fromarray(image))
+                    img_pil = Image.fromarray(image)
+                    # create an in-memory file object
+                    img_file = BytesIO()
+                    # save the PIL Image object as a PNG image to the file object
+                    img_pil.save(img_file, format='PNG')
+                    # get the binary data of the image from the file object
+                    img_binary = img_file.getvalue()
+                    msg = generate_email(from_user, to_user,  img_binary)
                     send_email(msg, from_user, from_pwd, to_user)
-                    analyze_face(image, frame_count, criminal_cache, known_person_cache)
+                    analyze_face(numpy_image, frame_count, criminal_cache, known_person_cache)
 
                     if not motion_detected:
                         motion_detected = True
@@ -71,7 +77,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                 # If motion is detected, save the video of the motion
                 if motion_detected and frames_saved < frames_to_save_before_motion + frames_to_save_after_motion:
                     if capture.get(cv2.CAP_PROP_POS_FRAMES) >= start_frame:
-                        out.write(image)
+                        out.write(numpy_image)
                         print('saved to frame: {0}'.format(frames_saved))
                         frames_saved += 1
                 elif motion_detected:
