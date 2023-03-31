@@ -2,8 +2,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.header import Header
-from PIL import Image
-import numpy as np
 import smtplib
 
 # from_user = "anil.kumar.ait09@gmail.com"
@@ -23,7 +21,7 @@ def attach_image(image_path):
     return msg_image
 
 
-def generate_email(from_user, to_list, numpy_image):
+def generate_email(from_user, to_list, image):
     msg = MIMEMultipart('related')
     msg['Subject'] = Header(u'Subject', 'utf-8')
     msg['From'] = from_user
@@ -36,7 +34,7 @@ def generate_email(from_user, to_list, numpy_image):
     msg_html = MIMEText(msg_html, 'html', 'utf-8')
     msg_alternative.attach(msg_html)
     # msg.attach(attach_image(image_path))
-    msg.attach(MIMEImage(PIL.Image.fromarray(numpy_image)))
+    msg.attach(MIMEImage(image))
     return msg
 
 

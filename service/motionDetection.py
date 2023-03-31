@@ -10,7 +10,6 @@ from imageLoadService import load_criminal_images, load_known_images
 from emailService import generate_email, send_email
 from multiprocessing import Process
 from PIL import Image
-import numpy as np
 
 UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
 GARAGE_EXTERNAL_CAMERA_STREAM = '/dev/video0'
@@ -51,7 +50,6 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
         if capture.isOpened():
             ret, image = capture.read()
             print(type(image))
-            PIL.Image.fromarray(image)
             logger.info(" Processing file {0} ".format(streamUrl))
             while ret:
                 if tensor_coco_ssd_mobilenet(image) and any_object_found(image, 0.50, 0.4):
@@ -62,7 +60,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     # complete_file_name = UNKNOWN_VISITORS_PATH + str(camera_id) + "-" + str(image_count) + '.jpg'
                     image_count = image_count + 1
                     # cv2.imwrite(complete_file_name, image)
-                    msg = generate_email(from_user, to_user, image)
+                    msg = generate_email(from_user, to_user,  Image.fromarray(image))
                     send_email(msg, from_user, from_pwd, to_user)
                     analyze_face(image, frame_count, criminal_cache, known_person_cache)
 
