@@ -20,8 +20,8 @@ from_user = "anil.kumar.ait09@gmail.com"
 from_pwd = "pw"
 to_user = "anil.kumar.ait09@gmail.com"
 
-frames_to_save_before_motion = 30
-frames_to_save_after_motion = 30
+frames_to_save_before_motion = 90
+frames_to_save_after_motion = 90
 
 count = 0
 ssd_model_path = '/usr/local/squirrel-ai-mini/model/coco-ssd-mobilenet'
