@@ -40,7 +40,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
         capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         fps = capture.get(cv2.CAP_PROP_FPS)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter("Vid-{0}.avi".format(time.time()), fourcc, fps, (FRAME_WIDTH, FRAME_HEIGHT))
+        out = cv2.VideoWriter("/usr/local/squirrel-ai-mini/{0}.avi".format(time.time()), fourcc, fps, (FRAME_WIDTH, FRAME_HEIGHT))
 
         if not capture.isOpened():
             logger.error("Error opening video file {}".format(streamUrl))
