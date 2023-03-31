@@ -22,8 +22,9 @@ to_user = "anil.kumar.ait09@gmail.com"
 
 frames_to_save_before_motion = 90
 frames_to_save_after_motion = 90
-
 count = 0
+RESOLUTION_HORIZONTAL = 1280
+RESOLUTION_VERTICAL = 720
 ssd_model_path = '/usr/local/squirrel-ai-mini/model/coco-ssd-mobilenet'
 efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/efficientdet_lite0.tflite'
 logger = get_logger("Motion Detection")
@@ -32,15 +33,13 @@ logger = get_logger("Motion Detection")
 def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
     try:
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter('output_video.avi', fourcc, 30, (640, 480))
+        out = cv2.VideoWriter('output_video.avi', fourcc, 5, (RESOLUTION_HORIZONTAL, RESOLUTION_VERTICAL))
         motion_detected = False
         start_frame = None
         frames_saved = 0
         capture = cv2.VideoCapture(streamUrl)
-        # capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        # capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-        capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+        capture.set(cv2.CAP_PROP_FRAME_WIDTH, RESOLUTION_HORIZONTAL)
+        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, RESOLUTION_VERTICAL)
         if not capture.isOpened():
             logger.error("Error opening video file {}".format(streamUrl))
 
@@ -90,7 +89,8 @@ def start_monitoring():
         criminal_cache = load_criminal_images()
         known_person_cache = load_known_images()
         # monitor_camera_stream(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache)
-        p1 = Process(target=monitor_camera_stream, args=(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache,))
+        p1 = Process(target=monitor_camera_stream,
+                     args=(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache,))
         p1.start()
         p1.join()
     except Exception as e:
