@@ -25,6 +25,7 @@ frames_to_save_after_motion = 15
 count = 0
 FRAME_WIDTH = 800
 FRAME_HEIGHT = 600
+
 ssd_model_path = '/usr/local/squirrel-ai-mini/model/coco-ssd-mobilenet'
 efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/efficientdet_lite0.tflite'
 logger = get_logger("Motion Detection")
@@ -46,11 +47,9 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
             logger.error("Error opening video file {}".format(streamUrl))
 
         frame_count = 1
-        image_count = 1
         object_detection_flag = 0
         if capture.isOpened():
             ret, numpy_image = capture.read()
-            print(type(numpy_image))
             logger.info(" Processing file {0} ".format(streamUrl))
             while ret:
                 if tensor_coco_ssd_mobilenet(numpy_image) and any_object_found(numpy_image, 0.50, 0.4):
@@ -58,7 +57,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     print(fps)
                     if object_detection_flag == 0:
                         object_detection_flag = 1
-                    image_count = image_count + 1
+
                     img_pil = Image.fromarray(image)
                     # create an in-memory file object
                     img_file = BytesIO()
