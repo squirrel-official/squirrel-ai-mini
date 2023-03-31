@@ -32,14 +32,16 @@ logger = get_logger("Motion Detection")
 
 def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
     try:
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter('output_video.avi', fourcc, 5, (FRAME_WIDTH, FRAME_HEIGHT))
         motion_detected = False
         start_frame = None
         frames_saved = 0
         capture = cv2.VideoCapture(streamUrl)
         capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
         capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
+        fps = capture.get(cv2.CAP_PROP_FPS)
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter('output_video.avi', fourcc, fps, (FRAME_WIDTH, FRAME_HEIGHT))
+
         if not capture.isOpened():
             logger.error("Error opening video file {}".format(streamUrl))
 
@@ -51,10 +53,9 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
             ret, image = capture.read()
             logger.info(" Processing file {0} ".format(streamUrl))
             while ret:
-                fps = capture.get(cv2.CAP_PROP_FPS)
-                print(fps)
                 if tensor_coco_ssd_mobilenet(image) and any_object_found(image, 0.50, 0.4):
                     logger.debug("Object detected, flag :{0}".format(object_detection_flag))
+                    print(fps)
                     if object_detection_flag == 0:
                         detection_counter = time.time()
                         object_detection_flag = 1
