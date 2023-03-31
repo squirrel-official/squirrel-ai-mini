@@ -12,7 +12,6 @@ from multiprocessing import Process
 from PIL import Image
 from io import BytesIO
 
-UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
 GARAGE_EXTERNAL_CAMERA_STREAM = '/dev/video0'
 NOTIFICATION_URL = 'http://my-security.local:8087/visitor'
 
@@ -31,17 +30,18 @@ efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/
 logger = get_logger("Motion Detection")
 
 
-def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
+def monitor_camera_stream(streamUrl, criminal_cache, known_person_cache):
     try:
         motion_detected = False
         start_frame = None
         frames_saved = 0
         capture = cv2.VideoCapture(streamUrl)
-        capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
-        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
+        # capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
+        # capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         fps = capture.get(cv2.CAP_PROP_FPS)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter("/usr/local/squirrel-ai-mini/{0}.avi".format(time.time()), fourcc, fps, (FRAME_WIDTH, FRAME_HEIGHT))
+        out = cv2.VideoWriter("/usr/local/squirrel-ai-mini/{0}.avi".format(time.time()), fourcc, fps,
+                              (FRAME_WIDTH, FRAME_HEIGHT))
 
         if not capture.isOpened():
             logger.error("Error opening video file {}".format(streamUrl))
@@ -96,7 +96,7 @@ def start_monitoring():
         known_person_cache = load_known_images()
         # monitor_camera_stream(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache)
         p1 = Process(target=monitor_camera_stream,
-                     args=(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache,))
+                     args=(GARAGE_EXTERNAL_CAMERA_STREAM, criminal_cache, known_person_cache,))
         p1.start()
         p1.join()
     except Exception as e:
