@@ -37,8 +37,10 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
         start_frame = None
         frames_saved = 0
         capture = cv2.VideoCapture(streamUrl)
-        capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        # capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        # capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
         if not capture.isOpened():
             logger.error("Error opening video file {}".format(streamUrl))
 
