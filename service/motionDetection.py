@@ -63,7 +63,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     # create an in-memory file object
                     img_file = BytesIO()
                     # save the PIL Image object as a PNG image to the file object
-                    img_pil.save(img_file, format='PNG')
+                    img_pil.save(img_file, quality=95, format='PNG')
                     # get the binary data of the image from the file object
                     img_binary = img_file.getvalue()
                     msg = generate_email(from_user, to_user,  img_binary)
