@@ -20,11 +20,11 @@ from_user = "anil.kumar.ait09@gmail.com"
 from_pwd = "pw"
 to_user = "anil.kumar.ait09@gmail.com"
 
-frames_to_save_before_motion = 90
-frames_to_save_after_motion = 90
+frames_to_save_before_motion = 30
+frames_to_save_after_motion = 30
 count = 0
-RESOLUTION_HORIZONTAL = 1280
-RESOLUTION_VERTICAL = 720
+FRAME_WIDTH = 1280
+FRAME_HEIGHT = 720
 ssd_model_path = '/usr/local/squirrel-ai-mini/model/coco-ssd-mobilenet'
 efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/efficientdet_lite0.tflite'
 logger = get_logger("Motion Detection")
@@ -33,13 +33,13 @@ logger = get_logger("Motion Detection")
 def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
     try:
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter('output_video.avi', fourcc, 5, (RESOLUTION_HORIZONTAL, RESOLUTION_VERTICAL))
+        out = cv2.VideoWriter('output_video.avi', fourcc, 5, (FRAME_WIDTH, FRAME_HEIGHT))
         motion_detected = False
         start_frame = None
         frames_saved = 0
         capture = cv2.VideoCapture(streamUrl)
-        capture.set(cv2.CAP_PROP_FRAME_WIDTH, RESOLUTION_HORIZONTAL)
-        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, RESOLUTION_VERTICAL)
+        capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
+        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         if not capture.isOpened():
             logger.error("Error opening video file {}".format(streamUrl))
 
