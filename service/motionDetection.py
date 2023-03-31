@@ -57,10 +57,10 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     print(fps)
                     if object_detection_flag == 0:
                         object_detection_flag = 1
-                    complete_file_name = UNKNOWN_VISITORS_PATH + str(camera_id) + "-" + str(image_count) + '.jpg'
+                    # complete_file_name = UNKNOWN_VISITORS_PATH + str(camera_id) + "-" + str(image_count) + '.jpg'
                     image_count = image_count + 1
-                    cv2.imwrite(complete_file_name, image)
-                    msg = generate_email(from_user, to_user, complete_file_name)
+                    # cv2.imwrite(complete_file_name, image)
+                    msg = generate_email(from_user, to_user, image)
                     send_email(msg, from_user, from_pwd, to_user)
                     analyze_face(image, frame_count, criminal_cache, known_person_cache)
 

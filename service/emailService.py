@@ -35,8 +35,8 @@ def generate_email(from_user, to_list, image_path):
     msg_html = u'<h1>Below are the images</h1>'
     msg_html = MIMEText(msg_html, 'html', 'utf-8')
     msg_alternative.attach(msg_html)
-    msg.attach(attach_image(image_path))
-
+    # msg.attach(attach_image(image_path))
+    msg.attach(MIMEImage(image_path))
     return msg
 
 
