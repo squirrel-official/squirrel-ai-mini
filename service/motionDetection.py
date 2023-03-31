@@ -61,10 +61,9 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     send_email(msg, from_user, from_pwd, to_user)
                     analyze_face(image, frame_count, criminal_cache, known_person_cache)
 
-                if (time.time() - detection_counter) > 3 and object_detection_flag == 1:
-                    object_detection_flag = 0
-                    data = requests.post(NOTIFICATION_URL)
-                    logger.info("Detected activity sent notification, response : {0}".format(data))
+                    if not motion_detected:
+                        motion_detected = True
+                        start_frame = capture.get(cv2.CAP_PROP_POS_FRAMES) - frames_to_save_before_motion
 
                 # If motion is detected, save the video of the motion
                 if motion_detected and frames_saved < frames_to_save_before_motion + frames_to_save_after_motion:
