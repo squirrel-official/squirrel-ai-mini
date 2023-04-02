@@ -1,3 +1,4 @@
+import cgi
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
@@ -5,14 +6,19 @@ from email.header import Header
 import smtplib
 
 
+from customLogging.customLogging import get_logger
+
+logger = get_logger("Motion Detection")
+
+
 def attach_image(image_path):
+    logger.info("image dict: {0}".format(image_path))
     with open(image_path, 'rb') as file:
         msg_image = MIMEImage(file.read())
-        print(type(msg_image))
     return msg_image
 
 
-def generate_email(from_user, to_list, pil_image):
+def generate_email(from_user, to_list, image_path):
     msg = MIMEMultipart('related')
     msg['Subject'] = Header(u'Subject', 'utf-8')
     msg['From'] = from_user
@@ -24,7 +30,8 @@ def generate_email(from_user, to_list, pil_image):
     msg_html = u'<h1>Below are the images</h1>'
     msg_html = MIMEText(msg_html, 'html', 'utf-8')
     msg_alternative.attach(msg_html)
-    msg.attach(MIMEImage(pil_image))
+    msg.attach(attach_image(image_path))
+
     return msg
 
 
