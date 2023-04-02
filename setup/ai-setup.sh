@@ -17,6 +17,7 @@ pip3 install dlib
 pip3 install face_recognition -v
 pip3 install numpy --upgrade
 pip3 install opencv-contrib-python -v
+pip3 install aiosmtplib -v
 sudo apt-get install -y python3-opencv
 
 pip3 install tflite-support
