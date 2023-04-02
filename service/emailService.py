@@ -34,7 +34,7 @@ def generate_email(from_user, to_list, image_path):
     return msg
 
 
-def send_email(message, from_user, from_pwd, to_list):
+async def send_email(message, from_user, from_pwd, to_list):
     await aiosmtplib.send(
         message,
         sender=from_user,
