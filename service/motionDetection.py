@@ -7,7 +7,7 @@ from detection.tensorflow.tf_coco_ssd_algorithm import tensor_coco_ssd_mobilenet
 from detection.tensorflow.coco import any_object_found
 from faceService import analyze_face
 from imageLoadService import load_criminal_images, load_known_images
-from emailService import generate_email, send_email
+from emailService import generate_email, send_email, send_email_async
 
 from multiprocessing import Process
 
@@ -60,7 +60,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     image_count = image_count + 1
                     cv2.imwrite(complete_file_name, image)
                     msg = generate_email(from_user, to_user, complete_file_name)
-                    send_email(msg, from_user, from_pwd, to_user)
+                    send_email_async(msg, from_user, from_pwd, to_user)
                     analyze_face(image, frame_count, criminal_cache, known_person_cache)
 
                     if not motion_detected:

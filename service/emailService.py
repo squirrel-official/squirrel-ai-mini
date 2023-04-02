@@ -1,18 +1,18 @@
-import cgi
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.header import Header
 import smtplib
-
-
+import asyncio
+from email.message import EmailMessage
+import aiosmtplib
 from customLogging.customLogging import get_logger
 
 logger = get_logger("Motion Detection")
 
 
 def attach_image(image_path):
-    logger.info("image dict: {0}".format(image_path))
+    # logger.info("image dict: {0}".format(image_path))
     with open(image_path, 'rb') as file:
         msg_image = MIMEImage(file.read())
     return msg_image
@@ -31,15 +31,21 @@ def generate_email(from_user, to_list, image_path):
     msg_html = MIMEText(msg_html, 'html', 'utf-8')
     msg_alternative.attach(msg_html)
     msg.attach(attach_image(image_path))
-
     return msg
 
 
-def send_email(msg, from_user, from_pwd, to_list):
-    mail_server = smtplib.SMTP('smtp-relay.sendinblue.com', 587)
-    mail_server.ehlo()
-    mail_server.starttls()
-    mail_server.ehlo()
-    mail_server.login(from_user, from_pwd)
-    mail_server.sendmail(from_user, to_list, msg.as_string())
-    mail_server.quit()
+def send_email(message, from_user, from_pwd, to_list):
+    await aiosmtplib.send(
+        message,
+        sender=from_user,
+        recipients=to_list,
+        hostname='smtp-relay.sendinblue.com',
+        port=587,
+        username=from_user,
+        password=from_pwd
+    )
+
+
+def send_email_async(message, from_user, from_pwd, to_list):
+    asyncio.run(send_email(message, from_user, from_pwd, to_list))
+
