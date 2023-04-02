@@ -47,5 +47,5 @@ async def send_email(message, from_user, from_pwd, to_list):
 
 
 def send_email_async(message, from_user, from_pwd, to_list):
-    asyncio.run(send_email(message, from_user, from_pwd, to_list))
+    return asyncio.run(send_email(message, from_user, from_pwd, to_list))
 
