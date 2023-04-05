@@ -2,9 +2,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.header import Header
-import smtplib
 import asyncio
-from email.message import EmailMessage
 import aiosmtplib
 from customLogging.customLogging import get_logger
 
