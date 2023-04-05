@@ -90,7 +90,9 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
 def send_email_and_face_compare(message, image, frame_count, criminal_cache, known_person_cache):
     try:
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(send_email(message, from_user, from_pwd, to_user), analyze_face(image, frame_count, criminal_cache, known_person_cache))
+        loop.run_until_complete(send_email(message, from_user, from_pwd, to_user))
+        loop.run_until_complete(analyze_face(image, frame_count, criminal_cache, known_person_cache))
+
     except Exception as e:
         logger.error("An exception occurred.")
         logger.error(e, exc_info=True)
