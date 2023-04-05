@@ -30,7 +30,7 @@ efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/
 logger = get_logger("Motion Detection")
 
 
-async def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
+def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
     try:
         motion_detected = False
         start_frame = None
