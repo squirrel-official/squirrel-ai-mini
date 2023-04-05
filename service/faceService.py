@@ -26,7 +26,7 @@ VISITOR_NOTIFICATION_URL = 'http://my-security.local:8087/visitor'
 FRIEND_NOTIFICATION_URL = 'http://my-security.local:8087/friend'
 
 
-def analyze_face(image, count_index, criminal_cache, known_person_cache):
+async def analyze_face(image, count_index, criminal_cache, known_person_cache):
     unknown_face_image = extract_face(image)
     if unknown_face_image is not None:
         logger.debug('A new person identified by face so processing it')

@@ -1,6 +1,7 @@
 # import the opencv module
 import time
 import cv2
+import asyncio
 from customLogging.customLogging import get_logger
 # Initializing things
 from detection.tensorflow.tf_coco_ssd_algorithm import tensor_coco_ssd_mobilenet
@@ -39,7 +40,8 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
         capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         fps = capture.get(cv2.CAP_PROP_FPS)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter("/usr/local/squirrel-ai-mini/{0}.avi".format(time.time()), fourcc, fps, (FRAME_WIDTH, FRAME_HEIGHT))
+        out = cv2.VideoWriter("/usr/local/squirrel-ai-mini/{0}.avi".format(time.time()), fourcc, fps,
+                              (FRAME_WIDTH, FRAME_HEIGHT))
 
         if not capture.isOpened():
             logger.error("Error opening video file {}".format(streamUrl))
@@ -59,9 +61,10 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     complete_file_name = UNKNOWN_VISITORS_PATH + str(camera_id) + "-" + str(image_count) + '.jpg'
                     image_count = image_count + 1
                     cv2.imwrite(complete_file_name, image)
-                    msg = generate_email(from_user, to_user, complete_file_name)
-                    send_email_async(msg, from_user, from_pwd, to_user)
-                    analyze_face(image, frame_count, criminal_cache, known_person_cache)
+                    message = generate_email(from_user, to_user, complete_file_name)
+                    # send_email_async(message, from_user, from_pwd, to_user)
+                    # analyze_face(image, frame_count, criminal_cache, known_person_cache)
+                    send_email_and_face_compare(message, image, frame_count, criminal_cache, known_person_cache)
 
                     if not motion_detected:
                         motion_detected = True
@@ -79,6 +82,14 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                     out.release()
 
                 ret, image = capture.read()
+    except Exception as e:
+        logger.error("An exception occurred.")
+        logger.error(e, exc_info=True)
+
+
+def send_email_and_face_compare(message, image, frame_count, criminal_cache, known_person_cache):
+    try:
+        asyncio.gather(send_email(message, from_user, from_pwd, to_user), analyze_face(image, frame_count, criminal_cache, known_person_cache) )
     except Exception as e:
         logger.error("An exception occurred.")
         logger.error(e, exc_info=True)
