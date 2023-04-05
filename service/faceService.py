@@ -6,6 +6,7 @@ import cv2
 import face_recognition
 from face_recognition import load_image_file, face_encodings
 import requests
+import mediapipe as mp
 
 logger = get_logger("FaceComparisonUtil")
 MOTION_VIDEO_URL = '/var/lib/motion/*'
@@ -53,13 +54,8 @@ async def analyze_face(image, count_index, criminal_cache, known_person_cache):
 def extract_face(image):
     face_locations = face_recognition.face_locations(image)
     for face_location in face_locations:
-        # Print the location of each face in this image
         top, right, bottom, left = face_location
-        # print("A face is located at pixel location Top: {}, Left: {}, Bottom: {}, Right: {}".format(top, left, bottom,
-        #                                                                                             right))
-        # You can access the actual face itself like this:
         face_image = image[top:bottom, left:right]
-        # pil_image = Image.fromarray(face_image)
         return face_image
 
 
@@ -127,3 +123,15 @@ def compare_faces_with_path(known_image_path, unknown_image_path):
             if face_compare:
                 # pil_image.show()
                 return True
+
+
+def face_with_mp(image):
+    mp_face_detection = mp.solutions.face_detection
+    with mp_face_detection.FaceDetection(
+            model_selection=1, min_detection_confidence=0.5) as face_detection:
+        results = face_detection.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        if results.detections:
+            annotated_image = image.copy()
+            for detection in results.detections:
+                face = Image.fromarray(image).crop(detection)
+                cv2.imwrite('/usr/local/squirrel-ai-mini/face.png', face)
