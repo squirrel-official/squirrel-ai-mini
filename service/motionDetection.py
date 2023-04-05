@@ -30,7 +30,7 @@ efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/
 logger = get_logger("Motion Detection")
 
 
-def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
+async def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
     try:
         motion_detected = False
         start_frame = None
@@ -99,11 +99,11 @@ def start_monitoring():
     try:
         criminal_cache = load_criminal_images()
         known_person_cache = load_known_images()
-        # monitor_camera_stream(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache)
-        p1 = Process(target=monitor_camera_stream,
-                     args=(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache,))
-        p1.start()
-        p1.join()
+        asyncio.run(monitor_camera_stream(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache))
+        # p1 = Process(target=monitor_camera_stream,
+        #              args=(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache,))
+        # p1.start()
+        # p1.join()
     except Exception as e:
         logger.error("An exception occurred.")
         logger.error(e, exc_info=True)
