@@ -89,7 +89,8 @@ async def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_pers
 
 def send_email_and_face_compare(message, image, frame_count, criminal_cache, known_person_cache):
     try:
-        asyncio.gather(send_email(message, from_user, from_pwd, to_user), analyze_face(image, frame_count, criminal_cache, known_person_cache) )
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(send_email(message, from_user, from_pwd, to_user), analyze_face(image, frame_count, criminal_cache, known_person_cache))
     except Exception as e:
         logger.error("An exception occurred.")
         logger.error(e, exc_info=True)
@@ -99,11 +100,7 @@ def start_monitoring():
     try:
         criminal_cache = load_criminal_images()
         known_person_cache = load_known_images()
-        asyncio.run(monitor_camera_stream(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache))
-        # p1 = Process(target=monitor_camera_stream,
-        #              args=(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache,))
-        # p1.start()
-        # p1.join()
+        monitor_camera_stream(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache)
     except Exception as e:
         logger.error("An exception occurred.")
         logger.error(e, exc_info=True)
