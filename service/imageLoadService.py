@@ -2,6 +2,7 @@ import time
 import glob
 from face_recognition import load_image_file, face_encodings
 from customLogging.customLogging import get_logger
+import os
 
 count = 0
 
@@ -13,32 +14,27 @@ logger = get_logger("ImageLoadService")
 
 
 def load_criminal_images():
-    criminal_cache = []
     start_date_time = time.time()
-    for eachWantedCriminalPath in glob.glob(WANTED_CRIMINALS_PATH):
-        criminal_image = load_image_file(eachWantedCriminalPath)
-        try:
-            criminal_image_encoding = face_encodings(criminal_image)[0]
-            criminal_cache.append(criminal_image_encoding)
-        except IndexError as e:
-            logger.error("An exception occurred while reading {0}".format(eachWantedCriminalPath))
+    criminal_cache = [
+        next(face_encodings(load_image_file(entry.path)))
+        for entry in os.scandir(WANTED_CRIMINALS_PATH) if entry.is_file()
+    ]
     # Once the loading is done then print
-    logger.info(
-        "Loaded criminal  {0} images in {1} seconds".format(len(criminal_cache), (time.time() - start_date_time)))
+    logger.info(f"Loaded criminal {len(criminal_cache)} images in {time.time() - start_date_time} seconds")
     return criminal_cache
 
 
 def load_known_images():
-    known_person_cache = []
     start_date_time = time.time()
-    for eachWantedKnownPersonPath in glob.glob(FAMILIAR_FACES_PATH):
-        known_person_image = load_image_file(eachWantedKnownPersonPath)
+    known_person_cache = []
+    for index, path in enumerate(glob.glob(FAMILIAR_FACES_PATH)):
+        known_person_image = load_image_file(path)
         try:
-            known_person_image_encoding = face_encodings(known_person_image)[0]
-            known_person_cache.append(known_person_image_encoding)
+            known_person_image_encodings = face_encodings(known_person_image)
+            known_person_cache.extend(known_person_image_encodings)
         except IndexError as e:
-            logger.error("An exception occurred while reading {0}".format(eachWantedKnownPersonPath))
+            logger.error("An exception occurred while reading {0}".format(path))
+
     # Once the loading is done then print
-    logger.info(
-        "Loaded known  {0} images in {1} seconds".format(len(known_person_cache), (time.time() - start_date_time)))
+    logger.info(f"Loaded known {len(known_person_cache)} images in {time.time() - start_date_time} seconds")
     return known_person_cache

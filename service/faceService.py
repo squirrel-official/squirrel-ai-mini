@@ -31,22 +31,19 @@ async def analyze_face(image, count_index, criminal_cache, known_person_cache):
     unknown_face_image = extract_face(image)
     if unknown_face_image is not None:
         logger.debug('A new person identified by face so processing it')
-        unknown_face_image_encodings = extract_unknown_face_encodings(unknown_face_image)
-        # saving the image to visitor folder
+        unknown_face_encodings = extract_unknown_face_encodings(unknown_face_image)
         start_date_time = time.time()
-        for each_criminal_encoding in criminal_cache:
-            if compare_faces_with_encodings(each_criminal_encoding, unknown_face_image_encodings,
-                                            "eachWantedCriminalPath"):
-                cv2.imwrite('{}criminal-frame{:d}.jpg'.format(CAPTURED_CRIMINALS_PATH, count_index),
-                            unknown_face_image)
-                requests.post(CRIMINAL_NOTIFICATION_URL)
-
-        for each_known_encoding in known_person_cache:
-            if compare_faces_with_encodings(each_known_encoding, unknown_face_image_encodings,
-                                            "eachWantedKnownPath"):
-                cv2.imwrite('{}known-frame{:d}.jpg'.format(KNOWN_VISITORS_PATH, count_index),
-                            unknown_face_image)
-                requests.post(FRIEND_NOTIFICATION_URL)
+        for i, known_encoding in enumerate(criminal_cache + known_person_cache):
+            if compare_faces_with_encodings(known_encoding, unknown_face_encodings):
+                if i < len(criminal_cache):
+                    output_path = CAPTURED_CRIMINALS_PATH
+                    url = CRIMINAL_NOTIFICATION_URL
+                else:
+                    output_path = KNOWN_VISITORS_PATH
+                    url = FRIEND_NOTIFICATION_URL
+                cv2.imwrite(f"{output_path}frame{count_index}.jpg", unknown_face_image)
+                requests.post(url)
+                break
         logger.debug("Total comparison time is {0} seconds".format((time.time() - start_date_time)))
         count_index += 1
 
@@ -96,42 +93,3 @@ def compare_faces_with_encodings(known_image_encoding, unknown_image_encoding_li
                 return True
 
 
-def compare_faces_with_path(known_image_path, unknown_image_path):
-    # known_image = face_recognition.load_image_file("/Users/anil/Desktop/saurabh.jpeg")
-    known_image = load_image_file(known_image_path)
-    known_image_encoding = face_encodings(known_image)[0]
-
-    # image = face_recognition.load_image_file("/Users/anil/Desktop/test1.png")
-    unknown_image = load_image_file(unknown_image_path)
-    unknown_face_locations = face_recognition.face_locations(unknown_image)
-
-    for face_location in unknown_face_locations:
-
-        # Print the location of each face in this image
-        top, right, bottom, left = face_location
-        logger.debug(
-            "A face is located at pixel location Top: {}, Left: {}, Bottom: {}, Right: {}".format(top, left, bottom,
-                                                                                                  right))
-
-        # You can access the actual face itself like this:
-        unknown_face_image = unknown_image[top:bottom, left:right]
-        pil_image = Image.fromarray(unknown_face_image)
-        unknown_encoding = face_recognition.face_encodings(unknown_face_image)[0]
-        face_compare_list = face_recognition.compare_faces([unknown_encoding], known_image_encoding)
-        # show the image if it  has matched
-        for face_compare in face_compare_list:
-            if face_compare:
-                # pil_image.show()
-                return True
-
-
-def face_with_mp(image):
-    mp_face_detection = mp.solutions.face_detection
-    with mp_face_detection.FaceDetection(
-            model_selection=1, min_detection_confidence=0.5) as face_detection:
-        results = face_detection.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-        if results.detections:
-            annotated_image = image.copy()
-            for detection in results.detections:
-                face = Image.fromarray(image).crop(detection)
-                cv2.imwrite('/usr/local/squirrel-ai-mini/face.png', face)
