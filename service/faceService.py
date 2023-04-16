@@ -14,8 +14,8 @@ CAPTURED_CRIMINALS_PATH = '/usr/local/squirrel-ai-mini/result/captured-criminals
 KNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/known-visitors/'
 
 # For reading
-FAMILIAR_FACES_PATH = '/usr/local/squirrel-ai-mini/data/familiar-faces/*'
-WANTED_CRIMINALS_PATH = '/usr/local/squirrel-ai-mini/data/wanted-criminals/*'
+FAMILIAR_FACES_PATH = '/usr/local/squirrel-ai-mini/data/familiar-faces/'
+WANTED_CRIMINALS_PATH = '/usr/local/squirrel-ai-mini/data/wanted-criminals/'
 
 CRIMINAL_NOTIFICATION_URL = 'http://my-security.local:8087/criminal'
 VISITOR_NOTIFICATION_URL = 'http://my-security.local:8087/visitor'
