@@ -28,13 +28,14 @@ def load_known_images():
     start_date_time = time.time()
     known_person_cache = []
     for index, path in enumerate(glob.glob(FAMILIAR_FACES_PATH)):
-        known_person_image = load_image_file(path)
-        try:
-            known_person_image_encodings = face_encodings(known_person_image)
-            known_person_cache.extend(known_person_image_encodings)
-        except IndexError as e:
-            logger.error("An exception occurred while reading {0}".format(path))
-
+        if os.path.isfile(path):
+            known_person_image = load_image_file(path)
+            try:
+                known_person_image_encodings = face_encodings(known_person_image)
+                known_person_cache.extend(known_person_image_encodings)
+            except IndexError as e:
+                logger.error("An exception occurred while reading {0}".format(path))
     # Once the loading is done then print
     logger.info(f"Loaded known {len(known_person_cache)} images in {time.time() - start_date_time} seconds")
     return known_person_cache
+
