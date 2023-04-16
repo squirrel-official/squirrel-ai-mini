@@ -1,12 +1,8 @@
 import time
-
 from customLogging.customLogging import get_logger
-from PIL import Image
 import cv2
 import face_recognition
-from face_recognition import load_image_file, face_encodings
 import requests
-import mediapipe as mp
 
 logger = get_logger("FaceComparisonUtil")
 MOTION_VIDEO_URL = '/var/lib/motion/*'
@@ -54,21 +50,6 @@ def extract_face(image):
         top, right, bottom, left = face_location
         face_image = image[top:bottom, left:right]
         return face_image
-
-
-def compare_faces(known_image_encoding, unknown_image_encoding, each_wanted_criminal_path):
-    unknown_face_locations = face_recognition.face_locations(unknown_image_encoding)
-
-    for face_location in unknown_face_locations:
-        top, right, bottom, left = face_location
-        unknown_face_image = unknown_image_encoding[top:bottom, left:right]
-        for each_unknown_face_encoding in face_recognition.face_encodings(unknown_face_image):
-            face_compare_list = face_recognition.compare_faces([each_unknown_face_encoding], known_image_encoding, 0.5)
-            # show the image if it  has matched
-            for face_compare in face_compare_list:
-                if face_compare:
-                    print("face comparison match with %s" % each_wanted_criminal_path)
-                    return True
 
 
 def extract_unknown_face_encodings(unknown_image):
