@@ -7,7 +7,6 @@ import requests
 logger = get_logger("FaceComparisonUtil")
 MOTION_VIDEO_URL = '/var/lib/motion/*'
 CONFIG_PROPERTIES = '/usr/local/squirrel-ai-mini/config.properties'
-ARCHIVE_URL = "/usr/local/squirrel-ai-mini/data/archives/"
 
 # For writing
 UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
