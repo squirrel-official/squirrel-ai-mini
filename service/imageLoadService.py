@@ -16,7 +16,7 @@ logger = get_logger("ImageLoadService")
 def load_criminal_images():
     start_date_time = time.time()
     criminal_cache = [
-        next(face_encodings(load_image_file(entry.path)))
+        next(iter(face_encodings(load_image_file(entry.path))))
         for entry in os.scandir(WANTED_CRIMINALS_PATH) if entry.is_file()
     ]
     # Once the loading is done then print
