@@ -72,7 +72,7 @@ def tensor_coco_ssd_mobilenet(image):
         boxes_idx, classes_idx, scores_idx = 0, 1, 2
     object_found = 0
     # Load image and resize to expected shape [1xHxWx3]
-    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     imH, imW, _ = image.shape
     image_resized = cv2.resize(image, (width, height))
     input_data = np.expand_dims(image_resized, axis=0)

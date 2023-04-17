@@ -10,7 +10,7 @@ from detection.tensorflow.coco import any_object_found
 from faceService import analyze_face
 from imageLoadService import load_criminal_images, load_known_images
 from emailService import generate_email, send_email, send_email_async
-
+from contextlib import contextmanager
 
 UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
 NOTIFICATION_URL = 'http://my-security.local:8087/visitor'
@@ -29,10 +29,20 @@ efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/
 logger = get_logger("Motion Detection")
 
 
-def monitor_camera_stream( criminal_cache, known_person_cache):
+@contextmanager
+def video_capture(source):
+    capture = cv2.VideoCapture(source)
+    try:
+        yield capture
+    finally:
+        capture.release()
+
+
+def monitor_camera_stream(criminal_cache, known_person_cache):
     motion_detected = False
     frames_saved = 0
-    with cv2.VideoCapture('/dev/video0') as capture:
+    print(cv2.VideoCapture('/dev/video0'))
+    with (video_capture('/dev/video0')) as capture:
         capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
         capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         fps = capture.get(cv2.CAP_PROP_FPS)
