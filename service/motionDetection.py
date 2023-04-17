@@ -13,7 +13,6 @@ from emailService import generate_email, send_email, send_email_async
 
 
 UNKNOWN_VISITORS_PATH = '/usr/local/squirrel-ai-mini/result/unknown-visitors/'
-GARAGE_EXTERNAL_CAMERA_STREAM = '/dev/video0'
 NOTIFICATION_URL = 'http://my-security.local:8087/visitor'
 
 from_user = "anil.kumar.ait09@gmail.com"
@@ -30,10 +29,10 @@ efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/
 logger = get_logger("Motion Detection")
 
 
-def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cache):
+def monitor_camera_stream( criminal_cache, known_person_cache):
     motion_detected = False
     frames_saved = 0
-    with cv2.VideoCapture(streamUrl) as capture:
+    with cv2.VideoCapture('/dev/video0') as capture:
         capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
         capture.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         fps = capture.get(cv2.CAP_PROP_FPS)
@@ -42,7 +41,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
                               fourcc, fps, (FRAME_WIDTH, FRAME_HEIGHT))
 
         if not capture.isOpened():
-            logger.error(f"Error opening video file {streamUrl}")
+            logger.error(f"Error opening video file {'/dev/video0'}")
 
         image_count = 1
         object_detection_flag = 0
@@ -50,7 +49,7 @@ def monitor_camera_stream(streamUrl, camera_id, criminal_cache, known_person_cac
             if tensor_coco_ssd_mobilenet(image) and any_object_found(image, 0.50, 0.4):
                 if object_detection_flag == 0:
                     object_detection_flag = 1
-                complete_file_name = f"{UNKNOWN_VISITORS_PATH}{camera_id}-{image_count}.jpg"
+                complete_file_name = f"{UNKNOWN_VISITORS_PATH}-{image_count}.jpg"
                 image_count += 1
                 cv2.imwrite(complete_file_name, image)
                 message = generate_email(from_user, to_user, complete_file_name)
@@ -87,7 +86,7 @@ def start_monitoring():
     try:
         criminal_cache = load_criminal_images()
         known_person_cache = load_known_images()
-        monitor_camera_stream(GARAGE_EXTERNAL_CAMERA_STREAM, 1, criminal_cache, known_person_cache)
+        monitor_camera_stream(criminal_cache, known_person_cache)
     except Exception as e:
         logger.error("An exception occurred.")
         logger.error(e, exc_info=True)
