@@ -54,31 +54,37 @@ def monitor_camera_stream(criminal_cache, known_person_cache):
             logger.error(f"Error opening video file {'/dev/video0'}")
 
         image_count = 1
+        frame_count = 1;
         object_detection_flag = 0
-        for frame_count, image in enumerate(iter(capture.read, (False, None))):
-            if tensor_coco_ssd_mobilenet(image) and any_object_found(image, 0.50, 0.4):
-                if object_detection_flag == 0:
-                    object_detection_flag = 1
-                complete_file_name = f"{UNKNOWN_VISITORS_PATH}-{image_count}.jpg"
-                image_count += 1
-                cv2.imwrite(complete_file_name, image)
-                message = generate_email(from_user, to_user, complete_file_name)
-                send_email_and_face_compare(message, image, frame_count, criminal_cache, known_person_cache)
+        if capture.isOpened():
+            ret, image = capture.read()
+            while ret:
+                if tensor_coco_ssd_mobilenet(image) and any_object_found(image, 0.50, 0.4):
+                    if object_detection_flag == 0:
+                        object_detection_flag = 1
+                    complete_file_name = f"{UNKNOWN_VISITORS_PATH}-{image_count}.jpg"
+                    image_count += 1
+                    cv2.imwrite(complete_file_name, image)
+                    message = generate_email(from_user, to_user, complete_file_name)
+                    send_email_and_face_compare(message, image, frame_count, criminal_cache, known_person_cache)
 
-                if not motion_detected:
-                    motion_detected = True
-                    start_frame = capture.get(cv2.CAP_PROP_POS_FRAMES) - frames_to_save_before_motion
+                    if not motion_detected:
+                        motion_detected = True
+                        start_frame = capture.get(cv2.CAP_PROP_POS_FRAMES) - frames_to_save_before_motion
 
-            if motion_detected and frames_saved < frames_to_save_before_motion + frames_to_save_after_motion:
-                current_frame = capture.get(cv2.CAP_PROP_POS_FRAMES)
-                if current_frame >= start_frame:
-                    out.write(image)
-                    logger.debug(f"saved to frame: {frames_saved}")
-                    frames_saved += 1
-            elif motion_detected:
-                motion_detected = False
-                frames_saved = 0
-                out.release()
+                if motion_detected and frames_saved < frames_to_save_before_motion + frames_to_save_after_motion:
+                    current_frame = capture.get(cv2.CAP_PROP_POS_FRAMES)
+                    if current_frame >= start_frame:
+                        out.write(image)
+                        logger.debug(f"saved to frame: {frames_saved}")
+                        frames_saved += 1
+                elif motion_detected:
+                    motion_detected = False
+                    frames_saved = 0
+                    out.release()
+
+                ret, image = capture.read()
+                frame_count = frame_count + 1
 
 
 def send_email_and_face_compare(message, image, frame_count, criminal_cache, known_person_cache):
