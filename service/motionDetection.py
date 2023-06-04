@@ -54,7 +54,7 @@ def monitor_camera_stream(criminal_cache, known_person_cache):
             logger.error(f"Error opening video file {'/dev/video0'}")
 
         image_count = 1
-        frame_count = 1;
+        frame_count = 1
         object_detection_flag = 0
         if capture.isOpened():
             ret, image = capture.read()
