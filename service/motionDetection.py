@@ -29,20 +29,11 @@ efficientdet_lite0_path = '/usr/local/squirrel-ai-mini/model/efficientdet-lite0/
 logger = get_logger("Motion Detection")
 
 
-@contextmanager
-def video_capture(source):
-    capture = cv2.VideoCapture(source)
-    try:
-        yield capture
-    finally:
-        capture.release()
-
-
 def monitor_camera_stream(criminal_cache, known_person_cache):
     motion_detected = False
     frames_saved = 0
-    print(cv2.VideoCapture('/dev/video0'))
-    with (video_capture('/dev/video0')) as capture:
+    logger.debug(cv2.VideoCapture('/dev/video0'))
+    with (cv2.VideoCapture('/dev/video0')) as capture:
         if not capture.isOpened():
             logger.error(f"Error opening video file {'/dev/video0'}")
 
@@ -68,9 +59,9 @@ def monitor_camera_stream(criminal_cache, known_person_cache):
 
 def send_email_and_face_compare(message, image, frame_count, criminal_cache, known_person_cache):
     try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(send_email(message, from_user, from_pwd, to_user))
-        loop.run_until_complete(analyze_face(image, frame_count, criminal_cache, known_person_cache))
+
+        send_email(message, from_user, from_pwd, to_user)
+        analyze_face(image, frame_count, criminal_cache, known_person_cache)
 
     except Exception as e:
         logger.error("An exception occurred.")
